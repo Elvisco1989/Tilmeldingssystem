@@ -1,0 +1,42 @@
+# Visual Studio folders
+.vs/
+
+# User-specific files
+*.user
+*.suo
+
+# Build results
+bin/
+obj/
+
+# Rider IDE files
+.idea/
+
+# Logs and temp files
+*.log
+*.tmp
+
+# Visual Studio cache files
+*.userosscache
+*.sln.docstates
+
+# Database files
+*.db
+
+# NuGet packages
+*.nupkg
+*.snupkg
+
+# Publish output
+publish/
+
+# Resharper files
+_ReSharper*/
+*.DotSettings.user
+
+# Windows thumbnail cache files
+Thumbs.db
+ehthumbs.db
+
+# Mac system files
+.DS_Store
