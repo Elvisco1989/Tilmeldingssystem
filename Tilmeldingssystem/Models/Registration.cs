@@ -5,7 +5,7 @@ namespace Tilmeldingssystem.Models
     public class Registration
     {
         [Key]
-        public int Id { get; set; }
+        public int RegistrationId { get; set; }
         public int MemberId { get; set; }
         public int ActivityId { get; set; }
         public DateTime RegistrationDate { get; set; }

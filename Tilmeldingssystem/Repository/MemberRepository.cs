@@ -34,9 +34,9 @@ namespace Tilmeldingssystem.Repository
             return _context.Members.ToList();
         }
 
-        public Member GetMemberById(int id)
+        public Member? GetMemberById(int id)
         {
-            return _context.Members.FirstOrDefault(m => m.Id == id);
+            return _context.Members.FirstOrDefault(m => m.MemberId == id);
         }
 
         public bool SaveChanges()
