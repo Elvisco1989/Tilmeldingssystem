@@ -14,6 +14,8 @@ namespace Tilmeldingssystem.AppDbcontext
         public DbSet<Activity> Activities { get; set; }
         public DbSet<Registration> Registrations { get; set; }
 
+        public DbSet<Payment> Payments { get; set; } // Assuming you have a ClubMember model for many-to-many relationship
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
