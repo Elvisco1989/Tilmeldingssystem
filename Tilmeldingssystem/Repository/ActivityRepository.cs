@@ -31,9 +31,9 @@ namespace Tilmeldingssystem.Repository
             }
         }
 
-        public Activity GetActivityById(int id)
+        public Activity? GetActivityById(int id)
         {
-            return _context.Activities.FirstOrDefault(a => a.Id == id);
+            return _context.Activities.FirstOrDefault(a => a.ActivityId == id);
         }
 
         public IEnumerable<Activity> GetAllActivities()
