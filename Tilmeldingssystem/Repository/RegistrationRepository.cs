@@ -36,9 +36,9 @@ namespace Tilmeldingssystem.Repository
             return _context.Registrations.ToList();
         }
 
-        public Registration GetRegistrationById(int id)
+        public Registration? GetRegistrationById(int id)
         {
-            return _context.Registrations.FirstOrDefault(r => r.Id == id);
+            return _context.Registrations.FirstOrDefault(r => r.RegistrationId == id);
         }
 
         public bool SaveChanges()

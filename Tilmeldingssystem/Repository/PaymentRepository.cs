@@ -50,6 +50,7 @@ namespace Tilmeldingssystem.Repository
         {
             _context.Payments.Update(payment);
             _context.SaveChanges();
+
         }
     }
 }

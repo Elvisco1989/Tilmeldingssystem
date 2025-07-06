@@ -34,9 +34,9 @@ namespace Tilmeldingssystem.Repository
             return _context.Clubs.ToList();
         }
 
-        public Club GetClubById(int id)
+        public Club? GetClubById(int id)
         {
-            return _context.Clubs.FirstOrDefault(c => c.Id == id);
+            return _context.Clubs.FirstOrDefault(c => c.ClubId == id);
         }
 
         public bool SaveChanges()

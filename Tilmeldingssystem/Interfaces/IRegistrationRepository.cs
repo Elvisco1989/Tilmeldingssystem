@@ -5,7 +5,7 @@ namespace Tilmeldingssystem.Interfaces
     public interface IRegistrationRepository
     {
         IEnumerable<Registration> GetAllRegistrations();
-        Registration GetRegistrationById(int id);
+        Registration? GetRegistrationById(int id);
         void AddRegistration(Registration registration);
         void UpdateRegistration(Registration registration);
         void DeleteRegistration(int id);
