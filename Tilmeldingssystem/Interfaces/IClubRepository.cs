@@ -10,5 +10,6 @@ namespace Tilmeldingssystem.Interfaces
         void UpdateClub(Club club);
         void DeleteClub(int id);
         bool SaveChanges();
+        public IEnumerable<Club> GetAllClubsWithMembers();
     }
 }

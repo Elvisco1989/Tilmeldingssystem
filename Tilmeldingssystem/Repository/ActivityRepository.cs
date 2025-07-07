@@ -18,7 +18,7 @@ namespace Tilmeldingssystem.Repository
         public void AddActivity(Activity activity)
         {
             _context.Activities.Add(activity);
-            _context.SaveChanges();
+            //_context.SaveChanges();
         }
 
         public void DeleteActivity(int id)
@@ -31,9 +31,9 @@ namespace Tilmeldingssystem.Repository
             }
         }
 
-        public Activity GetActivityById(int id)
+        public Activity? GetActivityById(int id)
         {
-            return _context.Activities.FirstOrDefault(a => a.Id == id);
+            return _context.Activities.FirstOrDefault(a => a.ActivityId == id);
         }
 
         public IEnumerable<Activity> GetAllActivities()
