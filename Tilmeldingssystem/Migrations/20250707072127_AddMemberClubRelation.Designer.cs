@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tilmeldingssystem.AppDbcontext;
 
@@ -11,9 +12,11 @@ using Tilmeldingssystem.AppDbcontext;
 namespace Tilmeldingssystem.Migrations
 {
     [DbContext(typeof(TilmeldingsDbContext))]
-    partial class TilmeldingsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250707072127_AddMemberClubRelation")]
+    partial class AddMemberClubRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,21 +112,6 @@ namespace Tilmeldingssystem.Migrations
                     b.ToTable("Members");
                 });
 
-            modelBuilder.Entity("Tilmeldingssystem.Models.MemberActivity", b =>
-                {
-                    b.Property<int>("MemberId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ActivityId")
-                        .HasColumnType("int");
-
-                    b.HasKey("MemberId", "ActivityId");
-
-                    b.HasIndex("ActivityId");
-
-                    b.ToTable("MemberActivities");
-                });
-
             modelBuilder.Entity("Tilmeldingssystem.Models.MemberClub", b =>
                 {
                     b.Property<int>("MemberId")
@@ -192,30 +180,7 @@ namespace Tilmeldingssystem.Migrations
 
                     b.HasKey("RegistrationId");
 
-                    b.HasIndex("ActivityId");
-
-                    b.HasIndex("MemberId");
-
                     b.ToTable("Registrations");
-                });
-
-            modelBuilder.Entity("Tilmeldingssystem.Models.MemberActivity", b =>
-                {
-                    b.HasOne("Tilmeldingssystem.Models.Activity", "Activity")
-                        .WithMany("MemberActivities")
-                        .HasForeignKey("ActivityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Tilmeldingssystem.Models.Member", "Member")
-                        .WithMany("MemberActivities")
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Activity");
-
-                    b.Navigation("Member");
                 });
 
             modelBuilder.Entity("Tilmeldingssystem.Models.MemberClub", b =>
@@ -237,30 +202,6 @@ namespace Tilmeldingssystem.Migrations
                     b.Navigation("Member");
                 });
 
-            modelBuilder.Entity("Tilmeldingssystem.Models.Registration", b =>
-                {
-                    b.HasOne("Tilmeldingssystem.Models.Activity", "Activity")
-                        .WithMany()
-                        .HasForeignKey("ActivityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Tilmeldingssystem.Models.Member", "Member")
-                        .WithMany()
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Activity");
-
-                    b.Navigation("Member");
-                });
-
-            modelBuilder.Entity("Tilmeldingssystem.Models.Activity", b =>
-                {
-                    b.Navigation("MemberActivities");
-                });
-
             modelBuilder.Entity("Tilmeldingssystem.Models.Club", b =>
                 {
                     b.Navigation("MemberClubs");
@@ -268,8 +209,6 @@ namespace Tilmeldingssystem.Migrations
 
             modelBuilder.Entity("Tilmeldingssystem.Models.Member", b =>
                 {
-                    b.Navigation("MemberActivities");
-
                     b.Navigation("MemberClubs");
                 });
 #pragma warning restore 612, 618

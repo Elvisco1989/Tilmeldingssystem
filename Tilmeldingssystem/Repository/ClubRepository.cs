@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using Tilmeldingssystem.AppDbcontext;
 using Tilmeldingssystem.Interfaces;
@@ -48,5 +49,15 @@ namespace Tilmeldingssystem.Repository
         {
             _context.Clubs.Update(club);
         }
+
+        public IEnumerable<Club> GetAllClubsWithMembers()
+        {
+            return _context.Clubs
+                .Include(c => c.MemberClubs)
+                    .ThenInclude(mc => mc.Member)
+                .AsNoTracking()  // Optional: improves read-only performance
+                .ToList();
+        }
+
     }
 }

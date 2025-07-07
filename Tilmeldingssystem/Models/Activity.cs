@@ -13,5 +13,8 @@ namespace Tilmeldingssystem.Models
         public string Location { get; set; }
         public decimal Price { get; set; }
         //public int ClubId { get; set; }
+
+        public ICollection<MemberActivity> MemberActivities { get; set; } = new List<MemberActivity>();
+
     }
 }

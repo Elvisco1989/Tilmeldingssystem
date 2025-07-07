@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Tilmeldingssystem.Interfaces;
 using Tilmeldingssystem.Models;
+using Tilmeldingssystem.Models.Dto;
 
 namespace Tilmeldingssystem.Controllers
 {
@@ -35,8 +36,17 @@ namespace Tilmeldingssystem.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddMember(Member member)
+        public ActionResult AddMember(CreateMemberDto dto)
         {
+            // Map DTO to entity
+            var member = new Member
+            {
+                FullName = dto.FullName,
+                Email = dto.Email,
+                Phone = dto.Phone,
+                DateOfBirth = dto.DateOfBirth
+            };
+
             _memberRepository.AddMember(member);
             if (_memberRepository.SaveChanges())
             {

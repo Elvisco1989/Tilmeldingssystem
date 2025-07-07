@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Tilmeldingssystem.AppDbcontext;
+using Tilmeldingssystem.Interfaces;
+using Tilmeldingssystem.Repository;
+using Tilmeldingssystem.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +14,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<TilmeldingsDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register repositories
+builder.Services.AddScoped<IRegistrationRepository, RegistrationRepository>();
+builder.Services.AddScoped<IActivityRepository, ActivityRepository>();
+builder.Services.AddScoped<IMemberRepository, MemberRepository>();
+builder.Services.AddScoped<IClubRepository, ClubRepository>();
+// Register services
+builder.Services.AddScoped<IMemberService, MemberService>();
+
 
 var app = builder.Build();
 
