@@ -22,6 +22,7 @@ builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 builder.Services.AddScoped<IClubRepository, ClubRepository>();
 // Register services
 builder.Services.AddScoped<IMemberService, MemberService>();
+builder.Services.AddScoped<IActivityService, ActivityService>();
 
 
 var app = builder.Build();

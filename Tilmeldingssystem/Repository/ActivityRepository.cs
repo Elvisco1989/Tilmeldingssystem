@@ -18,7 +18,7 @@ namespace Tilmeldingssystem.Repository
         public void AddActivity(Activity activity)
         {
             _context.Activities.Add(activity);
-            _context.SaveChanges();
+            //_context.SaveChanges();
         }
 
         public void DeleteActivity(int id)
