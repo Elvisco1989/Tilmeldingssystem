@@ -8,10 +8,12 @@ namespace Tilmeldingssystem.Services
     public class ActivityService : IActivityService
     {
         private readonly TilmeldingsDbContext _context;
+        private readonly PaymentService _paymentService;
 
-        public ActivityService(TilmeldingsDbContext context)
+        public ActivityService(TilmeldingsDbContext context, PaymentService paymentService)
         {
             _context = context;
+            _paymentService = paymentService;
         }
 
         public async Task<MemberActivityRegistrationResultDto?> RegisterMemberToActivityAsync(MemberActivityRegistrationDto dto)
@@ -20,13 +22,13 @@ namespace Tilmeldingssystem.Services
             var activity = await _context.Activities.FindAsync(dto.ActivityId);
 
             if (member == null || activity == null)
-                return null;  // Or throw an exception or return a failure DTO/message
+                return null;
 
             var alreadyRegistered = await _context.Set<MemberActivity>()
                 .AnyAsync(ma => ma.MemberId == dto.MemberId && ma.ActivityId == dto.ActivityId);
 
             if (alreadyRegistered)
-                return null;  // Or throw, or return a failure DTO/message
+                return null;
 
             var memberActivity = new MemberActivity
             {
@@ -34,8 +36,11 @@ namespace Tilmeldingssystem.Services
                 ActivityId = dto.ActivityId
             };
 
-            _context.Add(memberActivity);
+            _context.MemberActivities.Add(memberActivity);
             await _context.SaveChangesAsync();
+
+            // Create Stripe PaymentIntent
+            var intent = _paymentService.CreateActivityPaymentIntent(memberActivity);
 
             return new MemberActivityRegistrationResultDto
             {
@@ -43,10 +48,12 @@ namespace Tilmeldingssystem.Services
                 Location = activity.Location,
                 Time = activity.StartTime,
                 Amount = activity.Price,
-                MemberName = member.FullName
+                MemberName = member.FullName,
+                PaymentIntentClientSecret = intent.ClientSecret
             };
         }
-
-
     }
+
+
 }
+
