@@ -43,5 +43,26 @@ namespace Tilmeldingssystem.Controllers
 
             return Ok(tickets);
         }
+
+        [HttpGet("member/{memberId}")]
+        public ActionResult<IEnumerable<TicketResponseDto>> GetTicketsByMemberId(int memberId)
+        {
+            try
+            {
+                var tickets = _ticketService.GetTicketsByMemberId(memberId);
+
+                if (tickets == null || !tickets.Any())
+                {
+                    return NotFound($"No tickets found for Member ID {memberId}.");
+                }
+
+                return Ok(tickets);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }
