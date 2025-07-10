@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Tilmeldingssystem.Models;
+using Tilmeldingssystem.TicketSystem;
 
 namespace Tilmeldingssystem.AppDbcontext
 {
@@ -19,6 +20,9 @@ namespace Tilmeldingssystem.AppDbcontext
         public DbSet<MemberClub> MemberClubs { get; set; }  // ✅ Add this line
 
         public DbSet<MemberActivity> MemberActivities { get; set; }
+
+
+        public DbSet<Ticket> Tickets { get; set; } // Assuming you have a Registration model for activity registrations
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
