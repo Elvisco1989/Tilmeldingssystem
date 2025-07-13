@@ -26,5 +26,7 @@ namespace Tilmeldingssystem.TicketSystem
 
         // Navigation property
         public Member Member { get; set; }
+
+        public string? AttachmentPath { get; set; }
     }
 }

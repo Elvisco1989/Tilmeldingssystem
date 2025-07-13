@@ -11,5 +11,7 @@
         public string Message { get; set; }
 
         public int MemberId { get; set; } // 👈 Required now
+
+        public IFormFile? Attachment { get; set; } // 👈 For file upload
     }
 }

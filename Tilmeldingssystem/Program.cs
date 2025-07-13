@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Stripe;
+using System;
 using Tilmeldingssystem.AppDbcontext;
 using Tilmeldingssystem.Interfaces;
 using Tilmeldingssystem.Models.Pay;
@@ -18,27 +19,58 @@ builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Str
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<TilmeldingsDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+//builder.Services.AddDbContext<TilmeldingsDbContext>(options =>
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddSingleton<IStripeClient>(sp =>
 {
     var stripeSettings = sp.GetRequiredService<IOptions<StripeSettings>>().Value;
     return new StripeClient(stripeSettings.SecretKey);
 });
 
+//builder.Services.AddDbContext<TilmeldingsDbContext>(options =>
+//    options.UseSqlServer(
+//        builder.Configuration.GetConnectionString("support"),
+//        sqlserveroptions => sqlserveroptions.EnableRetryOnFailure()
+//    ));
+
+var env = builder.Environment.EnvironmentName;
+
+var connectionString = builder.Configuration.GetConnectionString(
+    env == "Development" ? "DefaultConnection" : "support"
+);
+
+builder.Services.AddDbContext<TilmeldingsDbContext>(options =>
+    options.UseSqlServer(connectionString,
+        sqlServerOptions => sqlServerOptions.EnableRetryOnFailure()
+    ));
+
+
 
 
 // Register StripeClient as a singleton
+//builder.Services.AddCors(options =>
+//{
+//    options.AddDefaultPolicy(policy =>
+//    {
+//        policy
+//            .AllowAnyOrigin()       // Allows all origins
+//            .AllowAnyHeader()
+//            .AllowAnyMethod();
+//    });
+//});
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy
-            .AllowAnyOrigin()       // Allows all origins
-            .AllowAnyHeader()
-            .AllowAnyMethod();
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
     });
 });
+
+
+
 
 
 
@@ -61,12 +93,27 @@ builder.Services.AddDbContext<LoginDBContext>(options =>
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<LoginDBContext>()
 
 
+
+
 .AddEntityFrameworkStores<LoginDBContext>()
 .AddDefaultTokenProviders();
 builder.Services.AddAuthorization();
 
 
+
+
+
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<TilmeldingsDbContext>();
+    dbContext.Database.Migrate();
+
+    var loginContext = scope.ServiceProvider.GetRequiredService<LoginDBContext>();
+    loginContext.Database.Migrate();
+}
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -82,5 +129,8 @@ app.UseCors(); // Enable CORS
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseStaticFiles(); // To serve wwwroot files
+
 
 app.Run();
