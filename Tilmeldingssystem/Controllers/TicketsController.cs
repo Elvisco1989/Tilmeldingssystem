@@ -15,48 +15,19 @@ namespace Tilmeldingssystem.Controllers
             _ticketService = ticketService;
         }
 
-        //[HttpPost]
-        //public ActionResult<TicketResponseDto> CreateTicket([FromBody] CreateTicketDto ticket)
-        //{
-        //    if (ticket == null)
-        //    {
-        //        return BadRequest("Ticket cannot be null.");
-        //    }
-
-        //    var createdTicket = _ticketService.CreateTicket(ticket);
-        //    if (createdTicket == null)
-        //    {
-        //        return BadRequest("Failed to create ticket.");
-        //    }
-
-        //    return Ok(ticket);
+       
 
         [HttpPost]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> CreateTicket([FromForm] CreateTicketDto ticket, IFormFile? file)
+        [HttpPost]
+        public async Task<IActionResult> CreateTicket([FromForm] CreateTicketDto ticket)
         {
             if (ticket == null)
                 return BadRequest("Ticket data mangler.");
 
-            string? savedFilePath = null;
+            // Call service; it handles file and TicketNumber
+            var createdTicket = _ticketService.CreateTicket(ticket);
 
-            if (file != null && file.Length > 0)
-            {
-                var uploadsFolder = Path.Combine("wwwroot", "uploads");
-                Directory.CreateDirectory(uploadsFolder); // Create folder if it doesn't exist
-
-                var uniqueFileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
-                var fullPath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                using (var stream = new FileStream(fullPath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
-
-                savedFilePath = $"/uploads/{uniqueFileName}"; // for browser access
-            }
-
-            var createdTicket = _ticketService.CreateTicket(ticket, savedFilePath); // 👈 pass file path
             return Ok(createdTicket);
         }
 

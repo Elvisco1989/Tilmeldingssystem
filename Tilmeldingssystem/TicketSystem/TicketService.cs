@@ -11,42 +11,7 @@ namespace Tilmeldingssystem.TicketSystem
             _context = context;
         }
 
-        //public TicketResponseDto CreateTicket(CreateTicketDto createTicketDto)
-        //{
-        //    // Validate that the Member exists
-        //    var member = _context.Members.Find(createTicketDto.MemberId);
-        //    if (member == null)
-        //    {
-        //        throw new ArgumentException("Invalid MemberId. Ticket must be linked to an existing member.");
-        //    }
-
-        //    var ticket = new Ticket
-        //    {
-        //        TicketNumber = Guid.NewGuid().ToString(),
-        //        Name = createTicketDto.Name,
-        //        Email = createTicketDto.Email,
-        //        Subject = createTicketDto.Subject,
-        //        Message = createTicketDto.Message,
-        //        Status = "åben",
-        //        CreatedAt = DateTime.UtcNow,
-        //        MemberId = createTicketDto.MemberId // 👈 Important for the FK
-        //    };
-
-        //    _context.Tickets.Add(ticket);
-        //    _context.SaveChanges();
-
-        //    return new TicketResponseDto
-        //    {
-        //        Id = ticket.Id,
-        //        TicketNumber = ticket.TicketNumber,
-        //        Name = ticket.Name,
-        //        Email = ticket.Email,
-        //        Subject = ticket.Subject,
-        //        Message = ticket.Message,
-        //        Status = ticket.Status,
-        //        CreatedAt = ticket.CreatedAt
-        //    };
-        //}
+        
         public TicketResponseDto CreateTicket(CreateTicketDto createTicketDto)
         {
             string? savedFilePath = null;
@@ -54,7 +19,7 @@ namespace Tilmeldingssystem.TicketSystem
             if (createTicketDto.Attachment != null)
             {
                 var uploadsFolder = Path.Combine("wwwroot", "uploads");
-                Directory.CreateDirectory(uploadsFolder); // Ensure folder exists
+                Directory.CreateDirectory(uploadsFolder);
 
                 var uniqueFileName = Guid.NewGuid() + Path.GetExtension(createTicketDto.Attachment.FileName);
                 var filePath = Path.Combine(uploadsFolder, uniqueFileName);
@@ -67,9 +32,22 @@ namespace Tilmeldingssystem.TicketSystem
                 savedFilePath = $"/uploads/{uniqueFileName}";
             }
 
+            // 🧮 Generate next ticket number
+            var lastTicket = _context.Tickets
+                .OrderByDescending(t => t.Id) // or CreatedAt
+                .FirstOrDefault();
+
+            int nextTicketNumber = 1;
+            if (lastTicket != null && int.TryParse(lastTicket.TicketNumber?.Replace("TICKET-", ""), out int lastNumber))
+            {
+                nextTicketNumber = lastNumber + 1;
+            }
+
+            var formattedTicketNumber = $"TICKET-{nextTicketNumber:D4}"; // e.g., TICKET-0001
+
             var ticket = new Ticket
             {
-                TicketNumber = Guid.NewGuid().ToString(),
+                TicketNumber = formattedTicketNumber,
                 Name = createTicketDto.Name,
                 Email = createTicketDto.Email,
                 Subject = createTicketDto.Subject,
@@ -77,7 +55,7 @@ namespace Tilmeldingssystem.TicketSystem
                 Status = "åben",
                 CreatedAt = DateTime.UtcNow,
                 MemberId = createTicketDto.MemberId,
-                AttachmentPath = savedFilePath // 👈 Save file URL
+                AttachmentPath = savedFilePath
             };
 
             _context.Tickets.Add(ticket);
@@ -94,42 +72,11 @@ namespace Tilmeldingssystem.TicketSystem
                 Status = ticket.Status,
                 CreatedAt = ticket.CreatedAt,
                 AttachmentPath = ticket.AttachmentPath
-                // optionally include attachment info here
             };
         }
 
-        public TicketResponseDto CreateTicket(CreateTicketDto createTicketDto, string? attachmentPath)
-        {
-            var ticket = new Ticket
-            {
-                TicketNumber = Guid.NewGuid().ToString(),
-                Name = createTicketDto.Name,
-                Email = createTicketDto.Email,
-                Subject = createTicketDto.Subject,
-                Message = createTicketDto.Message,
-                Status = "åben",
-                CreatedAt = DateTime.UtcNow,
-                MemberId = createTicketDto.MemberId,
-                AttachmentPath = attachmentPath
-            };
 
-            _context.Tickets.Add(ticket);
-            _context.SaveChanges();
-
-            return new TicketResponseDto
-            {
-                Id = ticket.Id,
-                TicketNumber = ticket.TicketNumber,
-                Name = ticket.Name,
-                Email = ticket.Email,
-                Subject = ticket.Subject,
-                Message = ticket.Message,
-                Status = ticket.Status,
-                CreatedAt = ticket.CreatedAt,
-                AttachmentPath = attachmentPath // optional
-            };
-        }
-
+        
 
         public List<TicketResponseDto> GetAllTickets()
         {

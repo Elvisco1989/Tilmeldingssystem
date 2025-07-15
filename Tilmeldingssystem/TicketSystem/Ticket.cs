@@ -22,10 +22,10 @@ namespace Tilmeldingssystem.TicketSystem
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Foreign key
-        public int MemberId { get; set; }
+        public int? MemberId { get; set; }
 
         // Navigation property
-        public Member Member { get; set; }
+        public Member? Member { get; set; }
 
         public string? AttachmentPath { get; set; }
     }
