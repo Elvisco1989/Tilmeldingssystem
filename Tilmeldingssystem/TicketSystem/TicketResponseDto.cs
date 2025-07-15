@@ -21,5 +21,7 @@
         public DateTime? UpdatedAt { get; set; }
 
         public DateTime? ClosedAt { get; set; }
+
+        public string? AttachmentPath { get; set; }
     }
 }

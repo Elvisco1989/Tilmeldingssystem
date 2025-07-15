@@ -15,22 +15,23 @@ namespace Tilmeldingssystem.Controllers
             _ticketService = ticketService;
         }
 
+       
+
         [HttpPost]
-        public ActionResult<TicketResponseDto> CreateTicket([FromBody] CreateTicketDto ticket)
+        [Consumes("multipart/form-data")]
+        [HttpPost]
+        public async Task<IActionResult> CreateTicket([FromForm] CreateTicketDto ticket)
         {
             if (ticket == null)
-            {
-                return BadRequest("Ticket cannot be null.");
-            }
+                return BadRequest("Ticket data mangler.");
 
+            // Call service; it handles file and TicketNumber
             var createdTicket = _ticketService.CreateTicket(ticket);
-            if (createdTicket == null)
-            {
-                return BadRequest("Failed to create ticket.");
-            }
 
-            return Ok(ticket);
+            return Ok(createdTicket);
         }
+
+
 
         [HttpGet]
         public ActionResult<IEnumerable<TicketResponseDto>> GetAllTickets()
@@ -43,5 +44,26 @@ namespace Tilmeldingssystem.Controllers
 
             return Ok(tickets);
         }
+
+        [HttpGet("member/{memberId}")]
+        public ActionResult<IEnumerable<TicketResponseDto>> GetTicketsByMemberId(int memberId)
+        {
+            try
+            {
+                var tickets = _ticketService.GetTicketsByMemberId(memberId);
+
+                if (tickets == null || !tickets.Any())
+                {
+                    return NotFound($"No tickets found for Member ID {memberId}.");
+                }
+
+                return Ok(tickets);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

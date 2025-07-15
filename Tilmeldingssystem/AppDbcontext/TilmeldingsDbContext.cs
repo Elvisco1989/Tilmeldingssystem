@@ -66,6 +66,11 @@ namespace Tilmeldingssystem.AppDbcontext
                 .WithMany()
                 .HasForeignKey(r => r.ActivityId);
 
+         modelBuilder.Entity<Ticket>()
+        .HasOne(t => t.Member)
+        .WithMany(m => m.Tickets)
+        .HasForeignKey(t => t.MemberId);
+
 
         }
     }

@@ -5,5 +5,8 @@ namespace Tilmeldingssystem.TicketSystem
     {
         TicketResponseDto CreateTicket(CreateTicketDto createTicketDto);
         List<TicketResponseDto> GetAllTickets();
+        List<TicketResponseDto> GetTicketsByMemberId(int memberId);
+        //TicketResponseDto CreateTicket(CreateTicketDto createTicketDto, string? attachmentPath);
+
     }
 }

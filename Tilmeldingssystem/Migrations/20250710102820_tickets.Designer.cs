@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tilmeldingssystem.AppDbcontext;
 
@@ -11,9 +12,11 @@ using Tilmeldingssystem.AppDbcontext;
 namespace Tilmeldingssystem.Migrations
 {
     [DbContext(typeof(TilmeldingsDbContext))]
-    partial class TilmeldingsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250710102820_tickets")]
+    partial class tickets
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -207,9 +210,6 @@ namespace Tilmeldingssystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AttachmentPath")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -217,7 +217,7 @@ namespace Tilmeldingssystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("MemberId")
+                    b.Property<int>("MemberId")
                         .HasColumnType("int");
 
                     b.Property<string>("Message")
@@ -308,7 +308,9 @@ namespace Tilmeldingssystem.Migrations
                 {
                     b.HasOne("Tilmeldingssystem.Models.Member", "Member")
                         .WithMany("Tickets")
-                        .HasForeignKey("MemberId");
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Member");
                 });

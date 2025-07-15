@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Tilmeldingssystem.TicketSystem;
+
 
 namespace Tilmeldingssystem.Models
 {
@@ -14,6 +16,8 @@ namespace Tilmeldingssystem.Models
         public ICollection<MemberClub> MemberClubs { get; set; } = new List<MemberClub>();
 
         public ICollection<MemberActivity> MemberActivities { get; set; } = new List<MemberActivity>();
+
+        public List<Ticket> Tickets { get; set; } = new();
 
     }
 }
