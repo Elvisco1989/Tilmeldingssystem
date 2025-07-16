@@ -61,13 +61,14 @@ builder.Services.AddDbContext<TilmeldingsDbContext>(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
         policy.AllowAnyOrigin()
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
 });
+
 
 
 
@@ -123,7 +124,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors(); // Enable CORS
+app.UseCors("AllowAll");
+// Enable CORS
 
 
 app.UseAuthorization();
