@@ -7,6 +7,10 @@ using Tilmeldingssystem.AppDbcontext;
 
 namespace Tilmeldingssystem.Controllers
 {
+    /// <summary>
+    /// Controller responsible for user registration.
+    /// Handles creating Identity users, assigning roles, and creating associated Member records.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class RegisterUserController : ControllerBase

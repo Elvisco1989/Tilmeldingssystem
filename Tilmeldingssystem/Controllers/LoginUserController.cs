@@ -13,6 +13,11 @@ using Tilmeldingssystem.Models.Login;
 
 namespace Tilmeldingssystem.Controllers
 {
+    /// <summary>
+    /// API controller for user login and JWT token generation.
+    /// Handles user authentication using ASP.NET Core Identity and issues JWT tokens upon successful login.
+    /// Also fetches related member information based on the user's email.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class LoginUserController : ControllerBase

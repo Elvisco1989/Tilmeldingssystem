@@ -12,56 +12,53 @@ using Tilmeldingssystem.TicketSystem;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+/// <summary>
+/// Adds MVC controllers to the service collection.
+/// </summary>
 builder.Services.AddControllers();
+
+/// <summary>
+/// Configures Stripe settings from the application configuration.
+/// </summary>
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+/// <summary>
+/// Adds Swagger/OpenAPI services for API documentation.
+/// </summary>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-//builder.Services.AddDbContext<TilmeldingsDbContext>(options =>
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+/// <summary>
+/// Registers StripeClient as a singleton using the configured Stripe secret key.
+/// </summary>
 builder.Services.AddSingleton<IStripeClient>(sp =>
 {
     var stripeSettings = sp.GetRequiredService<IOptions<StripeSettings>>().Value;
     return new StripeClient(stripeSettings.SecretKey);
 });
 
-//builder.Services.AddDbContext<TilmeldingsDbContext>(options =>
-//    options.UseSqlServer(
-//        builder.Configuration.GetConnectionString("support"),
-//        sqlserveroptions => sqlserveroptions.EnableRetryOnFailure()
-//    ));
-
+/// <summary>
+/// Selects the database connection string based on environment (Development or Production).
+/// </summary>
 var env = builder.Environment.EnvironmentName;
-
 var connectionString = builder.Configuration.GetConnectionString(
     env == "Development" ? "DefaultConnection" : "support"
 );
 
+/// <summary>
+/// Registers TilmeldingsDbContext using SQL Server with retry on failure enabled.
+/// </summary>
 builder.Services.AddDbContext<TilmeldingsDbContext>(options =>
     options.UseSqlServer(connectionString,
         sqlServerOptions => sqlServerOptions.EnableRetryOnFailure()
     ));
 
-
-
-
-// Register StripeClient as a singleton
-//builder.Services.AddCors(options =>
-//{
-//    options.AddDefaultPolicy(policy =>
-//    {
-//        policy
-//            .AllowAnyOrigin()       // Allows all origins
-//            .AllowAnyHeader()
-//            .AllowAnyMethod();
-//    });
-//});
-
+/// <summary>
+/// Configures CORS to allow any origin, header, and method.
+/// </summary>
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
         policy.AllowAnyOrigin()
               .AllowAnyHeader()
@@ -69,42 +66,42 @@ builder.Services.AddCors(options =>
     });
 });
 
-
-
-
-
-
-
-
-// Register repositories
+/// <summary>
+/// Registers repositories with scoped lifetime for dependency injection.
+/// </summary>
 builder.Services.AddScoped<IRegistrationRepository, RegistrationRepository>();
 builder.Services.AddScoped<IActivityRepository, ActivityRepository>();
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 builder.Services.AddScoped<IClubRepository, ClubRepository>();
-// Register services
+
+/// <summary>
+/// Registers services with scoped lifetime for dependency injection.
+/// </summary>
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<IActivityService, ActivityService>();
 builder.Services.AddScoped<PaymentService>();
 builder.Services.AddScoped<ITicketService, TicketService>();
 
-
+/// <summary>
+/// Registers the LoginDBContext for Identity authentication and configures Identity services.
+/// </summary>
 builder.Services.AddDbContext<LoginDBContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("Login")));
-builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<LoginDBContext>()
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Login")));
 
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<LoginDBContext>()
+    .AddDefaultTokenProviders();
 
-
-
-.AddEntityFrameworkStores<LoginDBContext>()
-.AddDefaultTokenProviders();
+/// <summary>
+/// Adds authorization services.
+/// </summary>
 builder.Services.AddAuthorization();
-
-
-
-
 
 var app = builder.Build();
 
+/// <summary>
+/// Applies pending migrations to the application and Identity databases at startup.
+/// </summary>
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<TilmeldingsDbContext>();
@@ -114,23 +111,41 @@ using (var scope = app.Services.CreateScope())
     loginContext.Database.Migrate();
 }
 
-
-// Configure the HTTP request pipeline.
+/// <summary>
+/// Enables Swagger and Swagger UI middleware in development environment.
+/// </summary>
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+/// <summary>
+/// Adds middleware to redirect HTTP requests to HTTPS.
+/// </summary>
 app.UseHttpsRedirection();
-app.UseCors(); // Enable CORS
 
+/// <summary>
+/// Enables the configured CORS policy globally.
+/// </summary>
+app.UseCors("AllowAll");
 
+/// <summary>
+/// Adds authorization middleware to the request pipeline.
+/// </summary>
 app.UseAuthorization();
 
+/// <summary>
+/// Maps controller endpoints for incoming requests.
+/// </summary>
 app.MapControllers();
 
-app.UseStaticFiles(); // To serve wwwroot files
+/// <summary>
+/// Enables serving of static files from the wwwroot folder.
+/// </summary>
+app.UseStaticFiles();
 
-
+/// <summary>
+/// Runs the application.
+/// </summary>
 app.Run();

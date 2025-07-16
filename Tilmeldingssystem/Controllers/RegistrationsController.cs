@@ -5,6 +5,10 @@ using Tilmeldingssystem.Models;
 
 namespace Tilmeldingssystem.Controllers
 {
+    /// <summary>
+    /// API controller for managing activity registrations.
+    /// Provides endpoints to get all registrations, get by ID, add new registrations, and update existing ones.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class RegistrationsController : ControllerBase
