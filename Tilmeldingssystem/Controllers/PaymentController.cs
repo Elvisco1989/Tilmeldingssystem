@@ -5,6 +5,10 @@ using Tilmeldingssystem.Services;
 
 namespace Tilmeldingssystem.Controllers
 {
+    /// <summary>
+    /// Controller responsible for handling payment-related operations.
+    /// Provides an endpoint to create Stripe payment intents for member activity registrations.
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     public class PaymentController : ControllerBase

@@ -4,6 +4,10 @@ using Tilmeldingssystem.TicketSystem;
 
 namespace Tilmeldingssystem.AppDbcontext
 {
+    /// <summary>
+    /// Represents the application's main Entity Framework Core database context for managing clubs, members, activities, registrations, payments, and tickets.
+    /// Configures entity relationships including many-to-many mappings between members and clubs, and members and activities.
+    /// </summary>
     public class TilmeldingsDbContext : DbContext
     {
         public TilmeldingsDbContext(DbContextOptions<TilmeldingsDbContext> options) : base(options)
@@ -21,9 +25,7 @@ namespace Tilmeldingssystem.AppDbcontext
 
         public DbSet<MemberActivity> MemberActivities { get; set; }
 
-
         public DbSet<Ticket> Tickets { get; set; } // Assuming you have a Registration model for activity registrations
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -44,7 +46,7 @@ namespace Tilmeldingssystem.AppDbcontext
                 .HasForeignKey(mc => mc.ClubId);
 
             modelBuilder.Entity<MemberActivity>()
-    .HasKey(ma => new { ma.MemberId, ma.ActivityId });
+                .HasKey(ma => new { ma.MemberId, ma.ActivityId });
 
             modelBuilder.Entity<MemberActivity>()
                 .HasOne(ma => ma.Member)
@@ -57,22 +59,19 @@ namespace Tilmeldingssystem.AppDbcontext
                 .HasForeignKey(ma => ma.ActivityId);
 
             modelBuilder.Entity<Registration>()
-    .HasOne(r => r.Member)
-    .WithMany()
-    .HasForeignKey(r => r.MemberId);
+                .HasOne(r => r.Member)
+                .WithMany()
+                .HasForeignKey(r => r.MemberId);
 
             modelBuilder.Entity<Registration>()
                 .HasOne(r => r.Activity)
                 .WithMany()
                 .HasForeignKey(r => r.ActivityId);
 
-         modelBuilder.Entity<Ticket>()
-        .HasOne(t => t.Member)
-        .WithMany(m => m.Tickets)
-        .HasForeignKey(t => t.MemberId);
-
-
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.Member)
+                .WithMany(m => m.Tickets)
+                .HasForeignKey(t => t.MemberId);
         }
     }
-   
 }

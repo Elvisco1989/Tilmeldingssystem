@@ -7,6 +7,11 @@ using Tilmeldingssystem.Services;
 
 namespace Tilmeldingssystem.Controllers
 {
+    /// <summary>
+    /// API controller for managing activities.
+    /// Provides endpoints for CRUD operations on activities and member registration to activities.
+    /// Uses IActivityRepository for data access and IActivityService for business logic.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ActivitiesController : ControllerBase
@@ -68,8 +73,6 @@ namespace Tilmeldingssystem.Controllers
 
             return BadRequest("Could not save activity.");
         }
-
-
 
         [HttpPut("{id}")]
         public ActionResult UpdateActivity(int id, Activity activity)

@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Tilmeldingssystem.Interfaces;
 using Tilmeldingssystem.Models;
@@ -7,6 +6,11 @@ using Tilmeldingssystem.Models.Dto;
 
 namespace Tilmeldingssystem.Controllers
 {
+    /// <summary>
+    /// API controller for managing members.
+    /// Provides endpoints to retrieve, create, update, and delete member records.
+    /// Uses IMemberRepository for data access operations.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class MembersController : ControllerBase
@@ -80,6 +84,6 @@ namespace Tilmeldingssystem.Controllers
                 return NoContent();
             }
             return NotFound();
-        }   
+        }
     }
 }

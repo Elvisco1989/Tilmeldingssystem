@@ -7,6 +7,11 @@ using Tilmeldingssystem.Services;
 
 namespace Tilmeldingssystem.Controllers
 {
+    /// <summary>
+    /// API controller for managing clubs.
+    /// Provides endpoints to perform CRUD operations on clubs and to register members to clubs.
+    /// Utilizes IClubRepository for data access and IMemberService for member-related business logic.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ClubsController : ControllerBase
@@ -118,7 +123,5 @@ namespace Tilmeldingssystem.Controllers
 
             return Ok(result);
         }
-
-
     }
 }
